@@ -1,4 +1,4 @@
-package com;
+package comTCP;
 
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -6,7 +6,7 @@ import java.net.Socket;
 public class EchoServerMultiThreaded  {
   
  	/**
-  	* main method
+  	* main method, default port set to 3100
   	**/
    public static void main(String[] args){
         ServerSocket listenSocket;

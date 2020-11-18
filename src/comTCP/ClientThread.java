@@ -1,4 +1,4 @@
-package com;
+package comTCP;
 
 import java.io.*;
 import java.net.*;
@@ -20,6 +20,7 @@ public class ClientThread
  	/**
   	* receives a request from client then sends an echo to the client
   	**/
+ 	@Override
 	public void run() {
 		try {
 			socIn = null;

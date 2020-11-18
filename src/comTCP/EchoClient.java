@@ -1,4 +1,4 @@
-package com;
+package comTCP;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -53,7 +53,6 @@ public class EchoClient {
         {
             if(stdIn.ready()) {
                 line=stdIn.readLine();
-
                 if (line.equals(".")) break;
 
                 socOut.println(line);
