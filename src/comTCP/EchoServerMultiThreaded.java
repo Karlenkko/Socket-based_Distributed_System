@@ -14,7 +14,7 @@ public class EchoServerMultiThreaded  {
         ServerSocket listenSocket;
 	   	int port = 3100;
 
-  		if (args.length == 1) {
+  		if (args.length > 0 && args.length == 1) {
 //          	System.out.println("Usage: java EchoServer <EchoServer port>");
 //          	System.exit(1);
 			port = Integer.parseInt(args[0]);
