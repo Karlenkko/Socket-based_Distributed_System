@@ -82,9 +82,7 @@ public class MulticastEchoClientIHM extends JFrame implements MulticastSubscribe
         this.add(lower, BorderLayout.SOUTH);
         this.setVisible(true);
     }
-    public static void main(String[] args) {
-        new MulticastEchoClientIHM();
-    }
+
 
     private synchronized void join() {
         try{
@@ -135,6 +133,10 @@ public class MulticastEchoClientIHM extends JFrame implements MulticastSubscribe
     @Override
     public void onReceiveMessage(ClientListenThread clientListenThread, String msg) {
         allMsgsArea.append(msg + '\n');
+    }
+
+    public static void main(String[] args) {
+        new MulticastEchoClientIHM();
     }
 
 }
