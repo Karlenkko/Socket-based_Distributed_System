@@ -1,5 +1,7 @@
 package comTCP;
 
+import Util.HistoryHandler;
+
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
@@ -15,6 +17,14 @@ public class ClientThread
 	ClientThread(Socket s) {
 		this.clientSocket = s;
 		socketList.add(s);
+		try {
+			socOut = new PrintStream(s.getOutputStream());
+			String history = HistoryHandler.readAll();
+			socOut.println(history);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
 	}
 
  	/**
@@ -28,16 +38,22 @@ public class ClientThread
     			new InputStreamReader(clientSocket.getInputStream()));    
 
     		String line;
+    		String msg;
     		while (true) {
 
     			if (socIn.ready()) {
 					line=socIn.readLine();
 
-					line = line + " from " + clientSocket.getInetAddress() + " : " + clientSocket.getPort();
+					msg = "From " + clientSocket.getInetAddress() + " : " + clientSocket.getPort() + " , says: " + line;
+					HistoryHandler.writeAMessage(msg);
 					for(Socket s : socketList) {
 						socOut = new PrintStream(s.getOutputStream());
-						System.out.println(line);
-						socOut.println(line);
+//						System.out.println(msg);
+						if (s.getPort() == clientSocket.getPort()) {
+							socOut.println("From yourself, says: " + line);
+							continue;
+						}
+						socOut.println(msg);
 					}
 
 				}

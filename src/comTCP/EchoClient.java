@@ -22,7 +22,7 @@ public class EchoClient {
         BufferedReader socIn = null;
         String host = "localhost";
         int port = 3100;
-        if (args.length == 2) {
+        if (args.length > 0 && args.length == 2) {
 //            System.out.println("Usage: java EchoClient <EchoServer host> <EchoServer port>");
 //            System.exit(1);
             host = args[0];
@@ -62,7 +62,7 @@ public class EchoClient {
 
             if(socIn.ready()) {
                 line = socIn.readLine();
-                System.out.println("echo: " + line);
+                System.out.println(line);
 
             }
 
