@@ -12,8 +12,16 @@ public class MulticastEchoClient {
     public static void main(String[] args) throws IOException{
         MulticastSocket mcSocket = null;
         BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-        InetAddress groupAddr = InetAddress.getByName("225.0.0.1");
-        int groupPort = 8888;
+        String address = "225.0.0.1";
+        int port = 8888;
+        if (args.length == 2) {
+//            System.out.println("Usage: java MulticastEchoClient <Address> <Port>");
+//            System.exit(1);
+            address = args[0];
+            port = Integer.parseInt(args[1]);
+        }
+        InetAddress groupAddr = InetAddress.getByName(address);
+        int groupPort = port;
 
         System.out.print( "Please enter your name : " );
         String clientName = stdIn.readLine();

@@ -1,5 +1,7 @@
 package comTCP;
 
+import Util.HistoryHandler;
+
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -10,12 +12,14 @@ public class EchoServerMultiThreaded  {
   	**/
    public static void main(String[] args){
         ServerSocket listenSocket;
-        
-//  		if (args.length != 1) {
+	   	int port = 3100;
+
+  		if (args.length == 1) {
 //          	System.out.println("Usage: java EchoServer <EchoServer port>");
 //          	System.exit(1);
-//  		}
-		int port = 3100;
+			port = Integer.parseInt(args[0]);
+  		}
+
 
 		try {
 //			listenSocket = new ServerSocket(Integer.parseInt(args[0])); //port

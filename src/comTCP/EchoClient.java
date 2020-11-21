@@ -20,13 +20,15 @@ public class EchoClient {
         PrintStream socOut = null;
         BufferedReader stdIn = null;
         BufferedReader socIn = null;
-
-//        if (args.length != 2) {
-//            System.out.println("Usage: java EchoClient <EchoServer host> <EchoServer port>");
-//            System.exit(1);
-//        }
         String host = "localhost";
         int port = 3100;
+        if (args.length == 2) {
+//            System.out.println("Usage: java EchoClient <EchoServer host> <EchoServer port>");
+//            System.exit(1);
+            host = args[0];
+            port = Integer.parseInt(args[1]);
+        }
+
         try {
 //            creation socket ==> connection
 //      	    echoSocket = new Socket(args[0],new Integer(args[1]).intValue());
