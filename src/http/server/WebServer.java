@@ -1,5 +1,3 @@
-///A Simple Web Server (WebServer.java)
-
 package http.server;
 
 import java.io.BufferedOutputStream;
@@ -59,14 +57,19 @@ public class WebServer {
                     request.append(str);
                     System.out.println(str);
                 }
+                if (request.toString().isEmpty() || request.toString().equals("")) {
+                    remote.close();
+                    continue;
+                }
                 WebServlet webServlet = new WebServlet(out);
                 String requestType = webServlet.getRequestType(request);
-
+                System.out.println("requestType : " + requestType);
                 if (requestType.equals("GET")) {
                     String requestFile = webServlet.getResourceFileName(request);
                     webServlet.httpGET(requestFile);
                 } else if (requestType.equals("DELETE")) {
-
+                    String deleteFile = webServlet.deleteResourceFileName(request);
+                    webServlet.httpDELETE(deleteFile);
                 }
                 remote.close();
 
