@@ -1,11 +1,11 @@
 package http.server;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.nio.ByteBuffer;
+import java.nio.CharBuffer;
+import java.nio.charset.Charset;
 
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
@@ -44,8 +44,11 @@ public class WebServer {
                 System.out.println("Connection, sending data.");
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                     remote.getInputStream()));
+
 //                PrintWriter out = new PrintWriter(remote.getOutputStream());
                 BufferedOutputStream out = new BufferedOutputStream(remote.getOutputStream());
+                WebServlet webServlet = new WebServlet(out);
+
 //                 read the data sent. We basically ignore it,
 //                 stop reading once a blank line is hit. This
 //                 blank line signals the end of the client HTTP
@@ -54,26 +57,50 @@ public class WebServer {
                 String str = ".";
                 while (str != null && !str.equals("")){
                     str = in.readLine();
+                    webServlet.fillHeaders(str);
                     request.append(str);
                     System.out.println(str);
                 }
+
                 if (request.toString().isEmpty() || request.toString().equals("")) {
                     remote.close();
                     continue;
                 }
-                WebServlet webServlet = new WebServlet(out);
+
+                byte[] body = null;
+                if (request.toString().contains("Content-Length")) {
+                    char[] bodyBuffer = new char[webServlet.getContentLength()];
+                    in.read(bodyBuffer, 0, webServlet.getContentLength());
+
+                    String postData = new String(bodyBuffer, 0, bodyBuffer.length);
+                    System.out.println(postData);
+
+                    Charset cs = Charset.forName("UTF-8");
+                    CharBuffer cb = CharBuffer.allocate(bodyBuffer.length);
+                    cb.put(bodyBuffer);
+                    cb.flip();
+                    ByteBuffer bb = cs.encode(cb);
+                    body = bb.array();
+                }
+
+
+
                 String requestType = webServlet.getRequestType(request);
                 System.out.println("requestType : " + requestType);
                 if (requestType.equals("GET")) {
                     String requestFile = webServlet.getResourceFileName(request);
                     webServlet.httpGET(requestFile);
                 } else if (requestType.equals("DELETE")) {
-                    String deleteFile = webServlet.deleteResourceFileName(request);
+                    String deleteFile = webServlet.getLocalResourceFileName(request);
                     webServlet.httpDELETE(deleteFile);
+                } else if (requestType.equals("PUT")) {
+                    String putFile = webServlet.getLocalResourceFileName(request);
+                    webServlet.httpPUT(body, putFile);
                 }
                 remote.close();
 
             } catch (Exception e) {
+
                 System.out.println("Error: " + e);
             }
         }
@@ -85,7 +112,7 @@ public class WebServer {
      * @param args
      *            Command line parameters are not used.
      */
-    public static void main(String args[]) {
+    public static void main(String[] args) {
       WebServer ws = new WebServer();
       ws.start();
     }

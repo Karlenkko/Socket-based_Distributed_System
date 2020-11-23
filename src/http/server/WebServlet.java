@@ -1,12 +1,26 @@
 package http.server;
 
 import java.io.*;
+import java.util.HashMap;
 
 public class WebServlet {
     private BufferedOutputStream out;
+    private HashMap<String, String> headers;
 
     WebServlet(BufferedOutputStream out) {
         this.out = out;
+        headers = new HashMap<>();
+    }
+
+    public void fillHeaders(String oneLine) {
+        String[] header = oneLine.split(": ");
+        if (header.length == 2) {
+            headers.put(header[0], header[1]);
+        }
+    }
+
+    public int getContentLength(){
+        return Integer.valueOf(headers.getOrDefault("Content-Length", "0"));
     }
 
     public String getResourceFileName(StringBuffer stringBuffer) {
@@ -18,7 +32,7 @@ public class WebServlet {
         return all[1];
     }
 
-    public String deleteResourceFileName(StringBuffer stringBuffer) {
+    public String getLocalResourceFileName(StringBuffer stringBuffer) {
         String request = stringBuffer.toString();
         String[] all = request.split(" ", 3);
         if (all[1].contains("=")) {
@@ -46,7 +60,7 @@ public class WebServlet {
     private String header(String resourceFile, long length, String status) {
         StringBuffer stringBuffer = new StringBuffer();
         stringBuffer.append("HTTP/1.0 " + status + "\r\n");
-        if (resourceFile.endsWith(".html") || resourceFile.endsWith(".htm")) {
+        if (resourceFile.endsWith(".html") || resourceFile.endsWith(".htm") || resourceFile.endsWith(".txt")) {
             stringBuffer.append("Content-Type: text/html\r\n");
         } else if (resourceFile.endsWith(".mp4")) {
             stringBuffer.append("Content-Type: video/mp4\r\n");
@@ -74,7 +88,7 @@ public class WebServlet {
 
     }
 
-    private String internalErrorMsg() {
+    public static String internalErrorMsg() {
         StringBuffer msg = new StringBuffer();
         msg.append("<html>");
         msg.append("<head><title>500 Internal Error</title></head>");
@@ -108,6 +122,25 @@ public class WebServlet {
         out.flush();
     }
 
+    private boolean response403(String fileName) throws IOException {
+        if (fileName.contains("index.html") || fileName.contains("404.html") || fileName.contains("demo")) {
+            // 403
+            String error403 = forbiddenMsg();
+            out.write(header("", error403.getBytes().length, "403 Forbidden").getBytes());
+            out.write(error403.getBytes());
+            out.flush();
+            return true;
+        }
+        return false;
+    }
+
+    private void response500() throws IOException {
+        String error500 = internalErrorMsg();
+        out.write(header("", error500.getBytes().length, "500 internal error").getBytes());
+        out.write(error500.getBytes());
+        out.flush();
+    }
+
     public void httpGET(String resourceFile) throws IOException {
         if (resourceFile.equals("/ ") || resourceFile.equals("/")) {
             resourceFile = "/index.html";
@@ -121,10 +154,7 @@ public class WebServlet {
             return;
         } else {
             // 500
-            String error500 = internalErrorMsg();
-            out.write(header("", error500.getBytes().length, "500 internal error").getBytes());
-            out.write(error500.getBytes());
-            out.flush();
+            response500();
             return;
         }
         BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(resourcePath));
@@ -142,21 +172,19 @@ public class WebServlet {
         File resourcePath = new File(resourceFile);
         System.out.println(resourceFile);
         if (resourcePath.exists() && resourcePath.isFile()) {
-            if (resourceFile.contains("index") || resourceFile.contains("404") || resourceFile.contains("demo")) {
-                // 403
-                String error403 = forbiddenMsg();
-                out.write(header("", error403.getBytes().length, "403 Forbidden").getBytes());
-                out.write(error403.getBytes());
-                out.flush();
-                return;
-            }
+            if (response403(resourceFile)) return;
             if (resourcePath.delete()) {
                 // 200
                 System.out.println(resourceFile + " deleted");
                 httpGET("/");
                 return;
             } else {
-                // 202
+                // 500
+                String error500 = internalErrorMsg();
+                out.write(header("", error500.getBytes().length, "500 internal error").getBytes());
+                out.write(error500.getBytes());
+                out.flush();
+                return;
             }
         } else if (!resourcePath.exists()){
             // 404
@@ -164,11 +192,42 @@ public class WebServlet {
             return;
         } else {
             // 500
-            String error500 = internalErrorMsg();
-            out.write(header("", error500.getBytes().length, "500 internal error").getBytes());
-            out.write(error500.getBytes());
-            out.flush();
+            response500();
             return;
         }
     }
+
+    public void httpPUT(byte[] body, String fileName) throws IOException {
+        File resourcePath = new File("./resources/" + fileName);
+        boolean existed = resourcePath.exists();
+        // 403
+        if (response403(fileName)) return;
+
+        FileOutputStream fos = new FileOutputStream(resourcePath);
+        fos.write(body);
+        fos.close();
+
+        if (existed) {
+            // 200
+            httpGET("/" + fileName);
+            return;
+        } else if (resourcePath.isFile()) {
+            // 201
+            out.write(header(fileName, resourcePath.length(), "201 Created").getBytes());
+            BufferedInputStream fileIn = new BufferedInputStream(new FileInputStream(resourcePath));
+            byte[] buffer = new byte[256];
+            int nbRead;
+            while((nbRead = fileIn.read(buffer)) != -1) {
+                out.write(buffer, 0, nbRead);
+            }
+            fileIn.close();
+            out.flush();
+        } else {
+            // 500
+            response500();
+            return;
+        }
+    }
+
+
 }
