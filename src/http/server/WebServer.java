@@ -2,6 +2,7 @@
 
 package http.server;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -45,8 +46,8 @@ public class WebServer {
                 System.out.println("Connection, sending data.");
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                     remote.getInputStream()));
-                PrintWriter out = new PrintWriter(remote.getOutputStream());
-
+//                PrintWriter out = new PrintWriter(remote.getOutputStream());
+                BufferedOutputStream out = new BufferedOutputStream(remote.getOutputStream());
 //                 read the data sent. We basically ignore it,
 //                 stop reading once a blank line is hit. This
 //                 blank line signals the end of the client HTTP
@@ -58,17 +59,15 @@ public class WebServer {
                     request.append(str);
                     System.out.println(str);
                 }
+                WebServlet webServlet = new WebServlet(out);
+                String requestType = webServlet.getRequestType(request);
 
-                // Send the response
-                // Send the headers
-                out.println("HTTP/1.0 200 OK");
-                out.println("Content-Type: text/html");
-                out.println("Server: Bot");
-                // this blank line signals the end of the headers
-                out.println("");
-                // Send the HTML page
-                out.println("<H1>Welcome to the Ultra Mini-WebServer</H2>");
-                out.flush();
+                if (requestType.equals("GET")) {
+                    String requestFile = webServlet.getResourceFileName(request);
+                    webServlet.httpGET(requestFile);
+                } else if (requestType.equals("DELETE")) {
+
+                }
                 remote.close();
 
             } catch (Exception e) {
