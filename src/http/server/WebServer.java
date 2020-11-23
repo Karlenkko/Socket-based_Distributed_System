@@ -6,6 +6,7 @@ import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
@@ -20,16 +21,20 @@ import java.nio.charset.Charset;
 public class WebServer {
 
     /**
-     * WebServer constructor.
+     * WebServer core function that starts a server on the port and listen to requests,
+     * responds to different requests.
+     * By default, the port number is 3000
+     * Warning, some requests may not be supported
+     * @param port the port to which the server will listen
      */
-    protected void start() {
+    protected void start(int port) {
         ServerSocket s;
 
-        System.out.println("Webserver starting up on port 3000");
+        System.out.println("Webserver starting up on port " + port);
         System.out.println("(press ctrl-c to exit)");
         try {
             // create the main server socket
-            s = new ServerSocket(3000);
+            s = new ServerSocket(port);
         } catch (Exception e) {
             System.out.println("Error: " + e);
             return;
@@ -75,7 +80,7 @@ public class WebServer {
                     String postData = new String(bodyBuffer, 0, bodyBuffer.length);
                     System.out.println(postData);
 
-                    Charset cs = Charset.forName("UTF-8");
+                    Charset cs = StandardCharsets.UTF_8;
                     CharBuffer cb = CharBuffer.allocate(bodyBuffer.length);
                     cb.put(bodyBuffer);
                     cb.flip();
@@ -85,7 +90,7 @@ public class WebServer {
 
 
 
-                String requestType = webServlet.getRequestType(request);
+                String requestType = WebServlet.getRequestType(request);
                 System.out.println("requestType : " + requestType);
                 if (requestType.equals("GET")) {
                     String requestFile = webServlet.getResourceFileName(request);
@@ -96,12 +101,28 @@ public class WebServer {
                 } else if (requestType.equals("PUT")) {
                     String putFile = webServlet.getLocalResourceFileName(request);
                     webServlet.httpPUT(body, putFile);
+                } else if (requestType.equals("POST")) {
+                    String putFile = webServlet.getLocalResourceFileName(request);
+                    webServlet.httpPOST(body, putFile);
+                } else if (requestType.equals("HEAD")) {
+                    String requestFile = webServlet.getResourceFileName(request);
+                    webServlet.httpHEAD(requestFile);
                 }
                 remote.close();
 
             } catch (Exception e) {
 
                 System.out.println("Error: " + e);
+                try{
+                    Socket remote = s.accept();
+                    BufferedOutputStream out = new BufferedOutputStream(remote.getOutputStream());
+                    String error500 = WebServlet.internalErrorMsg();
+                    out.write(WebServlet.header("", error500.getBytes().length, "500 internal error").getBytes());
+                    out.write(error500.getBytes());
+                    out.flush();
+                } catch (Exception ex) {
+                    System.out.println("Fatal Error: " + ex);
+                }
             }
         }
     }
@@ -109,11 +130,14 @@ public class WebServer {
     /**
      * Start the application.
      *
-     * @param args
-     *            Command line parameters are not used.
+     * @param args the first args, if given, should be the port number
      */
     public static void main(String[] args) {
       WebServer ws = new WebServer();
-      ws.start();
+      int port = 3000;
+      if (args.length > 0 ) {
+          port = Integer.parseInt(args[0]);
+      }
+      ws.start(port);
     }
 }

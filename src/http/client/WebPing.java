@@ -5,17 +5,23 @@ import java.net.InetAddress;
 import java.net.Socket;
 
 public class WebPing {
+    /**
+     * the main function for a web ping using the socket to connect to the server.
+     * by default, the host name is localhost, and the server port is 3000,
+     * they can be changed by passing the parameters using args[]
+     * @param args
+     */
     public static void main(String[] args) {
   
-//        if (args.length != 2) {
-//      	    System.err.println("Usage java WebPing <server host name> <server port number>");
-//      	    return;
-//        }
+
         String host = "localhost";
         int port = 3000;
 
-//        String httpServerHost = args[0];
-//        int httpServerPort = Integer.parseInt(args[1]);
+        if (args.length > 0 && args.length == 2) {
+            host = args[0];
+            port = Integer.parseInt(args[1]);
+        }
+
 
         String httpServerHost = host;
         int httpServerPort = port;
