@@ -58,8 +58,6 @@ public class WebServer {
 
 //                BufferedInputStream inputStream = new BufferedInputStream(remote.getInputStream());
 
-
-
 //                PrintWriter out = new PrintWriter(remote.getOutputStream());
                 BufferedOutputStream out = new BufferedOutputStream(remote.getOutputStream());
                 WebServlet webServlet = new WebServlet(out);
@@ -70,13 +68,16 @@ public class WebServer {
 //                 headers.
                 StringBuffer request = new StringBuffer();
                 String str = ".";
+
                 while (str != null && !str.equals("")){
                     str = in.readLine();
+                    if (str == null) {
+                        break;
+                    }
                     webServlet.fillHeaders(str);
                     request.append(str);
                     System.out.println(str);
                 }
-
                 if (request.toString().isEmpty() || request.toString().equals("")) {
                     remote.close();
                     continue;

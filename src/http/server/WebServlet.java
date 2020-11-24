@@ -190,7 +190,7 @@ public class WebServlet {
         if (resourceURI.contains("index.html")
                 || resourceURI.contains("404.html")
                 || resourceURI.contains("demo")
-                || ! resourcePath.canWrite()) {
+                || resourcePath.canWrite()) {
             // 403
             String error403 = forbiddenMsg();
             out.write(header("", error403.getBytes().length, "403 Forbidden").getBytes());
