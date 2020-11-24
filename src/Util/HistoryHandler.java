@@ -4,6 +4,10 @@ import java.io.*;
 
 public class HistoryHandler {
 
+    /**
+     * read all the histories saved at the local .txt file
+     * @return the String that contains all histories
+     */
     public static String readAll(){
         File history = new File("history.txt");
         BufferedReader reader = null;
@@ -21,6 +25,10 @@ public class HistoryHandler {
         return allMsg.toString();
     }
 
+    /**
+     * write one line of message into the history file
+     * @param msg one message sent by one user
+     */
     public static void writeAMessage(String msg) {
         try{
             FileWriter writer = new FileWriter("history.txt",true);

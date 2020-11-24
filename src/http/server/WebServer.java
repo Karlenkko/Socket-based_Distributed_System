@@ -7,6 +7,7 @@ import java.nio.ByteBuffer;
 import java.nio.CharBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
 
 /**
  * Example program from Chapter 1 Programming Spiders, Bots and Aggregators in
@@ -14,8 +15,6 @@ import java.nio.charset.StandardCharsets;
  * 
  * WebServer is a very simple web-server. Any request is responded with a very
  * simple web-page.
- * 
- * @author Jeff Heaton
  * @version 1.0
  */
 public class WebServer {
@@ -23,13 +22,20 @@ public class WebServer {
     /**
      * WebServer core function that starts a server on the port and listen to requests,
      * responds to different requests.
-     * By default, the port number is 3000
+     * the configs of the server are in the config.txt file
+     * which will be read right after the server starts
      * Warning, some requests may not be supported
-     * @param port the port to which the server will listen
      */
-    protected void start(int port) {
+    protected void start() {
+        HashMap<String, String> configs;
+        try {
+            configs = readConfig();
+        } catch (IOException e) {
+            System.out.println("Reading Config Error: " + e);
+            return;
+        }
         ServerSocket s;
-
+        int port = Integer.parseInt(configs.getOrDefault("port", "3000"));
         System.out.println("Webserver starting up on port " + port);
         System.out.println("(press ctrl-c to exit)");
         try {
@@ -128,16 +134,34 @@ public class WebServer {
     }
 
     /**
+     * reads a local config.txt file as the .env for the server,
+     * invoked when the server starts (start() method)
+     * @return a HashMap that contains all config info
+     * @throws IOException
+     */
+    private static HashMap<String, String> readConfig() throws IOException {
+        HashMap <String, String> configs = new HashMap<>();
+        File file = new File("./private/config.txt");
+        if (file.exists()) {
+            InputStreamReader reader = new InputStreamReader(new FileInputStream(file));
+            BufferedReader br = new BufferedReader(reader);
+            String rd = br.readLine();
+            while(rd != null) {
+                String[] s = rd.split(":");
+                configs.put(s[0], s[1]);
+                rd = br.readLine();
+            }
+        }
+        return configs;
+    }
+
+    /**
      * Start the application.
      *
-     * @param args the first args, if given, should be the port number
+     * @param args the arguments
      */
     public static void main(String[] args) {
       WebServer ws = new WebServer();
-      int port = 3000;
-      if (args.length > 0 ) {
-          port = Integer.parseInt(args[0]);
-      }
-      ws.start(port);
+      ws.start();
     }
 }
