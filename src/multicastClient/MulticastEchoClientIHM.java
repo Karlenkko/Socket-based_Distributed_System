@@ -10,8 +10,6 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
-import static java.lang.System.exit;
-
 public class MulticastEchoClientIHM extends JFrame implements MulticastSubscriber{
     private TextArea allMsgsArea = new TextArea();
     private TextField groupIPField = new TextField();
@@ -32,6 +30,14 @@ public class MulticastEchoClientIHM extends JFrame implements MulticastSubscribe
     private String currentInetAddress;
     private int currentPort;
     private boolean firstConnection = false;
+
+    /**
+     *
+     * multicast and broadcast use the particular address
+     * 224.0.0.0 to 239.255.255.255.
+     * here we set a default address to 225.0.0.1, and a default port to 8888,
+     * which can be modified in the GUI
+     */
     public MulticastEchoClientIHM(){
         setTitle("multicast Chat Client");
         setSize(640,480);
@@ -83,7 +89,10 @@ public class MulticastEchoClientIHM extends JFrame implements MulticastSubscribe
         this.setVisible(true);
     }
 
-
+    /**
+     * joins a new chat based on the address and port in the GUI.
+     * this method also clears the chat history in the previous channel
+     */
     private synchronized void join() {
         try{
             if (firstConnection) {
@@ -111,14 +120,18 @@ public class MulticastEchoClientIHM extends JFrame implements MulticastSubscribe
             send.setEnabled(true);
         } catch (UnknownHostException e) {
             System.err.println("Don't know about host:" + groupIPField.getText());
-            exit(1);
+            System.exit(1);
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for "
                     + "the connection to:"+ groupIPField.getText());
-            exit(1);
+            System.exit(1);
         }
     }
 
+    /**
+     * send a message to the current channel using the nickname, which can be
+     * changed at any time.
+     */
     private synchronized void send() {
         String msg = nicknameField.getText() + " says: " + msgField.getText();
         try {
@@ -130,11 +143,21 @@ public class MulticastEchoClientIHM extends JFrame implements MulticastSubscribe
         }
     }
 
+    /**
+     * concrete method that writes the message into the GUI when receiving a message,
+     * invoked by the Client Listen Thread
+     * @param clientListenThread the Client Listen Thread which actually listens to incoming messages
+     * @param msg the latest received message
+     */
     @Override
     public void onReceiveMessage(ClientListenThread clientListenThread, String msg) {
         allMsgsArea.append(msg + '\n');
     }
 
+    /**
+     * the main program that launches the GUI
+     * @param args
+     */
     public static void main(String[] args) {
         new MulticastEchoClientIHM();
     }

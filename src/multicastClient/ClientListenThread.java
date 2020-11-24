@@ -1,6 +1,5 @@
 package multicastClient;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 
@@ -9,11 +8,25 @@ public class ClientListenThread extends Thread{
     private MulticastSubscriber multicastSubscriber;
     private boolean consoleMode = true;
 
+    /**
+     * Constructor of the Client Listen Thread for multicast echo client console version,
+     * which do not require a subscriber when receiving a message
+     * @param name name of the tread, composed of its address and port
+     * @param socket the multicast socket
+     */
     ClientListenThread(String name, MulticastSocket socket){
         super(name);
         this.mcSocket = socket;
     }
 
+    /**
+     * Constructor of the Client Listen Thread for multicast echo client GUI version,
+     * since the message display can no longer be done by a System.out.print(),
+     * I choose to use the observer/subscriber design pattern to receive incoming messages
+     * @param name name of the tread, composed of its address and port
+     * @param socket the multicast socket
+     * @param multicastSubscriber the subscriber that will be informed when receiving a message
+     */
     ClientListenThread(String name, MulticastSocket socket, MulticastSubscriber multicastSubscriber){
         super(name);
         this.mcSocket = socket;
@@ -21,6 +34,9 @@ public class ClientListenThread extends Thread{
         consoleMode = false;
     }
 
+    /**
+     * overrides the default program of run that concretely receive messages and inform the subscriber
+     */
     @Override
     public void run() {
         try {

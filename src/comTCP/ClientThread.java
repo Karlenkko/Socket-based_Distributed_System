@@ -14,6 +14,12 @@ public class ClientThread
 	PrintStream socOut = null;
 	BufferedReader socIn = null;
 
+	/**
+	 * Constructor of the Client Thread, that use one thread to listen to incoming messages.
+	 * it marks a new client connect socket and save it to the broadcasting list, and tells the client
+	 * immediately the history message
+	 * @param s
+	 */
 	ClientThread(Socket s) {
 		this.clientSocket = s;
 		socketList.add(s);
@@ -28,7 +34,8 @@ public class ClientThread
 	}
 
  	/**
-  	* receives a request from client then sends an echo to the client
+  	* receives a request from client then sends an echo to all clients in the
+	 * broadcasting list
   	**/
  	@Override
 	public void run() {
@@ -65,5 +72,3 @@ public class ClientThread
 	}
   
   }
-
-  

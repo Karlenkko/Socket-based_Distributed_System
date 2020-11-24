@@ -13,8 +13,12 @@ public class EchoClient {
  
     /**
      *  main method
-     *  accepts a connection, receives a message from client then sends an echo to the client
-     **/
+     *  accepts a connection, receives a message from client then sends an echo to the client,
+     *  it has a default host name as localhost and a default port as 3100,
+     *  both of which can be changed by passing parameters in the args[]
+     * @param args arguments
+     * @throws IOException exception when handling input/output stream
+     */
     public static void main(String[] args) throws IOException {
         Socket echoSocket = null;
         PrintStream socOut = null;
@@ -63,9 +67,7 @@ public class EchoClient {
             if(socIn.ready()) {
                 line = socIn.readLine();
                 System.out.println(line);
-
             }
-
         }
         socOut.close();
         socIn.close();

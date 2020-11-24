@@ -8,8 +8,10 @@ import java.net.Socket;
 public class EchoServerMultiThreaded  {
   
  	/**
-  	* main method, default port set to 3100
-  	**/
+  	 * main method, default port set to 3100 and can be changed by
+	 * passing parameters in args[]
+	 * @param args arguments
+	 */
    public static void main(String[] args){
         ServerSocket listenSocket;
 	   	int port = 3100;
