@@ -231,12 +231,23 @@ public class WebServlet {
     /**
      * the method that handles the GET requests, which can have a lot of functionalities,
      * currently have 200, 404, 500 responses.
+     * One special resource for the GET request is that it allows the user to
+     * start a UDP tunnel at the server side and then communicate with it through
+     * UDP multicast
      * @param resourceURI the desired resource file name
      * @throws IOException exception for IO errors when writing output stream
      */
     public void httpGET(String resourceURI) throws IOException {
-        if (resourceURI.equals("/UDPServer")) {
-            startMulticastServer();
+        if (resourceURI.contains("/UDPServer")) {
+            String address = "";
+            String port = "";
+            if (resourceURI.contains("?")) {
+                String query = resourceURI.split("\\?")[1];
+                String[] data = query.split("&");
+                address = data[0].split("=")[1];
+                port = data[1].split("=")[1];
+            }
+            startMulticastServer(address, port);
             httpGET("/");
             return;
         }
@@ -375,9 +386,10 @@ public class WebServlet {
         }
     }
 
-    private void startMulticastServer() throws IOException {
+    private void startMulticastServer(String address, String port) throws IOException {
         System.out.println("Start UDP Server");
-        Process process = Runtime.getRuntime().exec("cmd /c java multicastClient.MulticastEchoClientServer");
+        Process process = Runtime.getRuntime().exec("cmd /c java multicastClient.MulticastEchoClientServer "
+                + address + " " + port);
     }
 
 
