@@ -1,5 +1,7 @@
 package multicastClient;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 
@@ -46,12 +48,23 @@ public class ClientListenThread extends Thread{
                 mcSocket.receive(packet);
                 String msg = new String(buffer, 0, packet.getLength());
                 System.out.println(msg);
+                leaveTrace(msg);
                 if (!consoleMode) {
                     multicastSubscriber.onReceiveMessage(this, msg);
                 }
             }
         } catch (Exception e) {
             System.err.println("Error in Multicast Client:" + e);
+        }
+    }
+
+    private static void leaveTrace(String msg) {
+        try{
+            FileWriter writer = new FileWriter("UDPTrace.txt",true);
+            writer.write(msg + "\n");
+            writer.close();
+        }catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
