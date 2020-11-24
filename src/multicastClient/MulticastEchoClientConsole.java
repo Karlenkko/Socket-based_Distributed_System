@@ -37,7 +37,6 @@ public class MulticastEchoClientConsole {
 
         System.out.print( "Please enter your name : " );
         String clientName = stdIn.readLine();
-
         try {
             mcSocket = new MulticastSocket(groupPort);
             mcSocket.joinGroup(groupAddr);
@@ -49,11 +48,11 @@ public class MulticastEchoClientConsole {
             mcSocket.send(enteringMsg);
 
         } catch (UnknownHostException e) {
-            System.err.println("Don't know about host:" + args[0]);
+            System.err.println("Don't know about host:" + address);
             exit(1);
         } catch (IOException e) {
             System.err.println("Couldn't get I/O for "
-                    + "the connection to:"+ args[0]);
+                    + "the connection to:"+ address);
             exit(1);
         }
 
