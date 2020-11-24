@@ -386,6 +386,14 @@ public class WebServlet {
         }
     }
 
+    /**
+     * launches a UDP tunnel at the server side,
+     * the MulticastEchoClientServer is very similar to the
+     * console version of the Multicast Echo Client
+     * @param address the address for multicast, default is 225.0.0.1
+     * @param port the port for multicast, default is 8888
+     * @throws IOException
+     */
     private void startMulticastServer(String address, String port) throws IOException {
         System.out.println("Start UDP Server");
         Process process = Runtime.getRuntime().exec("cmd /c java multicastClient.MulticastEchoClientServer "
