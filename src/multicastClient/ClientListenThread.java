@@ -60,7 +60,7 @@ public class ClientListenThread extends Thread{
 
     private static void leaveTrace(String msg) {
         try{
-            FileWriter writer = new FileWriter("UDPTrace.txt",true);
+            FileWriter writer = new FileWriter("UDPHistory.txt",true);
             writer.write(msg + "\n");
             writer.close();
         }catch (IOException e) {
