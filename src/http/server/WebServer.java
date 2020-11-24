@@ -56,6 +56,10 @@ public class WebServer {
                 BufferedReader in = new BufferedReader(new InputStreamReader(
                     remote.getInputStream()));
 
+//                BufferedInputStream inputStream = new BufferedInputStream(remote.getInputStream());
+
+
+
 //                PrintWriter out = new PrintWriter(remote.getOutputStream());
                 BufferedOutputStream out = new BufferedOutputStream(remote.getOutputStream());
                 WebServlet webServlet = new WebServlet(out);
@@ -78,6 +82,21 @@ public class WebServer {
                     continue;
                 }
 
+//
+//                int byte1;
+//                int byte2 = '\0';
+//                boolean newline = false;
+//                while((byte1 = inputStream.read()) != -1 && !(newline && byte2 == '\r' && byte1 == '\n')) {
+//                    if(byte2 == '\r' && byte1 == '\n') {
+//                        newline = true;
+//                    } else if(!(byte2 == '\n' && byte1 == '\r')) {
+//                        newline = false;
+//                    }
+//                    byte2 = byte1;
+//                }
+
+
+
                 byte[] body = null;
                 if (request.toString().contains("Content-Length")) {
                     char[] bodyBuffer = new char[webServlet.getContentLength()];
@@ -93,6 +112,12 @@ public class WebServer {
                     ByteBuffer bb = cs.encode(cb);
                     body = bb.array();
                 }
+
+//                if (request.toString().contains("Content-Length")) {
+//                    System.out.println(webServlet.getContentLength());
+//                    body = new byte[webServlet.getContentLength()];
+//                    inputStream.read(body);
+//                }
 
 
 

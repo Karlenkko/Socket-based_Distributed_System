@@ -235,6 +235,12 @@ public class WebServlet {
      * @throws IOException exception for IO errors when writing output stream
      */
     public void httpGET(String resourceURI) throws IOException {
+        if (resourceURI.equals("/UDPServer")) {
+            startMulticastServer();
+            httpGET("/");
+            return;
+        }
+
         if (resourceURI.equals("/ ") || resourceURI.equals("/")) {
             resourceURI = "/index.html";
         }
@@ -367,6 +373,11 @@ public class WebServlet {
             // 404
             response404();
         }
+    }
+
+    private void startMulticastServer() throws IOException {
+        System.out.println("Start UDP Server");
+        Process process = Runtime.getRuntime().exec("cmd /c java multicastClient.MulticastEchoClientServer");
     }
 
 
