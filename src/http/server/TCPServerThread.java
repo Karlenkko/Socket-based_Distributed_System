@@ -2,6 +2,9 @@ package http.server;
 
 import java.io.IOException;
 
+/**
+ * deprecated, DO NOT USE
+ */
 public class TCPServerThread extends Thread {
     /**
      * If this thread was constructed using a separate
