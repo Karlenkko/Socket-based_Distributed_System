@@ -5,6 +5,9 @@ import Util.HistoryHandler;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+/**
+ * TCP server main program
+ */
 public class EchoServerMultiThreaded  {
   
  	/**

@@ -9,7 +9,7 @@ public class WebPing {
      * the main function for a web ping using the socket to connect to the server.
      * by default, the host name is localhost, and the server port is 3000,
      * they can be changed by passing the parameters using args[]
-     * @param args
+     * @param args arguments for host and port
      */
     public static void main(String[] args) {
   

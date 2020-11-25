@@ -7,7 +7,9 @@ import java.io.PrintStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-
+/**
+ * TCP client main program
+ */
 public class EchoClient {
 
  

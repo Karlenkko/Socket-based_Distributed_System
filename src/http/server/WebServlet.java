@@ -3,6 +3,9 @@ package http.server;
 import java.io.*;
 import java.util.HashMap;
 
+/**
+ * web servlet sending responses according to different requests
+ */
 public class WebServlet {
     private BufferedOutputStream out; // the output stream which the server use to give responses
     private HashMap<String, String> headers; // the HashMap that notes all headers in a request
@@ -344,7 +347,7 @@ public class WebServlet {
      * the 200, 201 responses will return the result of the post request
      * @param body the binary body code of a file from the request
      * @param resourceURI the desired file name
-     * @throws IOException
+     * @throws IOException exception when handling output stream
      */
     public void httpPOST(byte[] body, String resourceURI) throws IOException {
         File resourceFile = new File("./resources/" + resourceURI);

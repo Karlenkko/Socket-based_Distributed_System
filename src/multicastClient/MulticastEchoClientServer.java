@@ -10,10 +10,14 @@ import java.net.UnknownHostException;
 
 import static java.lang.System.exit;
 
+/**
+ * UDP multicast client server console version main program
+ */
 public class MulticastEchoClientServer {
 
     /**
      * the main program of the console version multicast echo client,
+     * designed to be used for the UDP communication on the server side.
      * multicast and broadcast use the particular address
      * 224.0.0.0 to 239.255.255.255.
      * here we set a default address to 225.0.0.1, and a default port to 8888,

@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
 
+/**
+ * UDP multicast client thread that receives packets
+ */
 public class ClientListenThread extends Thread{
     private static MulticastSocket mcSocket;
     private MulticastSubscriber multicastSubscriber;

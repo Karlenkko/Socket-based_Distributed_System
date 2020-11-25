@@ -1,5 +1,9 @@
 package multicastClient;
 
+/**
+ * multicast subscriber interface, designed for GUI version to receive instant messages,
+ * methods are invoked by the Client Listen Thread
+ */
 public interface MulticastSubscriber {
 
     /**

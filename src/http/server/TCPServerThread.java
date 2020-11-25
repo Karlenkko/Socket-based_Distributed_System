@@ -18,6 +18,7 @@ public class TCPServerThread extends Thread {
      * @see #stop()
      */
     @Override
+    @Deprecated
     public void run() {
         try {
             Process process = Runtime.getRuntime().exec("cmd /c java comTCP.EchoServerMultiThreaded 3499");

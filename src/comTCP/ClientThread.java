@@ -6,6 +6,9 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 
+/**
+ * TCP server class for communication witrh clients
+ */
 public class ClientThread
 	extends Thread {
 	

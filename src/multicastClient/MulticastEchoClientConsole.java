@@ -10,6 +10,9 @@ import java.net.UnknownHostException;
 
 import static java.lang.System.exit;
 
+/**
+ * UDP multicast client console version main program
+ */
 public class MulticastEchoClientConsole {
 
     /**

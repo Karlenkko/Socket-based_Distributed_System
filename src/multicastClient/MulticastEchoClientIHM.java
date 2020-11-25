@@ -10,6 +10,9 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 
+/**
+ * UDP multicast client GUI version main program
+ */
 public class MulticastEchoClientIHM extends JFrame implements MulticastSubscriber{
     private TextArea allMsgsArea = new TextArea();
     private TextField groupIPField = new TextField();
@@ -156,7 +159,7 @@ public class MulticastEchoClientIHM extends JFrame implements MulticastSubscribe
 
     /**
      * the main program that launches the GUI
-     * @param args
+     * @param args arguments, currently not used here
      */
     public static void main(String[] args) {
         new MulticastEchoClientIHM();
