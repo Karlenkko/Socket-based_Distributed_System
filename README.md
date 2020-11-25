@@ -2,5 +2,5 @@
 basic chat room based on socket, using TCP &amp; UDP
 basic HTTP server that handles HEAD, GET, PUT, POST, DELETE requests.
 
-AUTHOR: Shihang ZHOU
+AUTHOR: Shihang ZHOU, 
 contact shihang.zhou@insa-lyon.fr if you want
